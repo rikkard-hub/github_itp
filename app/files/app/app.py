@@ -7,6 +7,7 @@ from flask import (
     send_from_directory,
 )
 from werkzeug.utils import secure_filename
+import sys
 import os
 from os.path import join, splitext, exists, getmtime
 from os import urandom, listdir
@@ -47,10 +48,7 @@ def get_images():
             file_path = join(upload_folder, filename)
             try:
                 mtime = getmtime(file_path)
-                images.append({
-                    "file_name": filename,
-                    "mtime": mtime
-                })
+                images.append({"file_name": filename, "mtime": mtime})
             except OSError:
                 # Skip files that can't be accessed
                 continue
@@ -78,8 +76,10 @@ def upload_file():
 
         file = request.files["file"]
 
-        if file.filename == '' or not is_img_file(file.filename):
-            return render_template("message.html", message="No valid image file provided")
+        if file.filename == "" or not is_img_file(file.filename):
+            return render_template(
+                "message.html", message="No valid image file provided"
+            )
 
         fname = secure_filename(file.filename)
         file_path = join(app.config["UPLOAD_FOLDER"], fname)
@@ -111,6 +111,30 @@ def download(imgname):
 def get_static(name):
     return send_from_directory("static", name)
 
+
+# Define route to delete an image
+@app.route("/delete/<imgname>", methods=["POST"])
+def delete_image(imgname):
+    """
+    Delete an image from the filesystem.
+    Redirects to home page after deletion.
+    """
+    # Sanitize filename to prevent path traversal attacks
+    fname = secure_filename(imgname)
+    file_path = join(app.config["UPLOAD_FOLDER"], fname)
+
+    # Delete file from filesystem if it exists
+    try:
+        if exists(file_path):
+            os.remove(file_path)
+            print(f"Deleted: {fname}", file=sys.stdout)
+        else:
+            print(f"File not found: {fname}", file=sys.stderr)
+    except OSError as err:
+        print(f"Filesystem error: {err}", file=sys.stderr)
+    return redirect("/")
+
+
 # To keep the application running
 if __name__ == "__main__":
-    app.run(debug=True, port=5001, host='0.0.0.0')
+    app.run(debug=True, port=5001, host="0.0.0.0")
