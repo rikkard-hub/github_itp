@@ -1,5 +1,7 @@
 # In The Picture
 
+[![CI Pipeline](https://github.com/rikkard-hub/github_itp/actions/workflows/ci.yml/badge.svg)](https://github.com/rikkard-hub/github_itp/actions/workflows/ci.yml)
+
 **A simple image upload and gallery application built with Python Flask**
 
 Used as the hands-on exercise application for the GitHub Fundamentals training course at AT Computing.
