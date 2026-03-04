@@ -66,3 +66,38 @@ jobs:
         run: |
           cd app/files
           pytest tests/ --verbose
+ 
+   # Job 3: Build and push Docker image to Azure Container Registry
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test  # Only run if tests pass
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure Container Registry
+        run: |
+          echo "${{ secrets.ACR_PASSWORD }}" | docker login \
+            ${{ secrets.ACR_REGISTRY_URL }} \
+            --username ${{ secrets.ACR_USERNAME }} \
+            --password-stdin
+
+      - name: Build Docker image
+        run: |
+          cd app
+          docker build \
+            -t ${{ secrets.ACR_REGISTRY_URL }}/github_itp:${{ github.sha }} \
+            -t ${{ secrets.ACR_REGISTRY_URL }}/github_itp:latest \
+            .
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.ACR_REGISTRY_URL }}/github_itp:${{ github.sha }}
+          docker push ${{ secrets.ACR_REGISTRY_URL }}/github_itp:latest
+
+      - name: Image published
+        run: |
+          echo "✅ Docker image published to ACR!"
+          echo "Image: ${{ secrets.ACR_REGISTRY_URL }}/github_itp:${{ github.sha }}"
