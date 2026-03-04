@@ -32,10 +32,6 @@
             <div class="card-body p-2">
               <div class="d-flex justify-content-between align-items-center">
                 <text style="font-size: x-small;">{{ image.file_name }}</text>
-                <form action="/delete/{{ image.file_name }}" method="post"
-                  onsubmit="return confirm('Delete {{ image.file_name }}?');" style="margin: 0;">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
               </div>
             </div>
           </div>
