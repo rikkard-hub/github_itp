@@ -88,16 +88,16 @@ jobs:
         run: |
           cd app
           docker build \
-            -t ${{ secrets.ACR_REGISTRY_URL }}/richard:${{ github.sha }} \
-            -t ${{ secrets.ACR_REGISTRY_URL }}/richard:latest \
+            -t ${{ secrets.ACR_REGISTRY_URL }}/waarblijfjejohan:${{ github.sha }} \
+            -t ${{ secrets.ACR_REGISTRY_URL }}/waarblijfjejohan:latest \
             .
 
       - name: Push Docker image to ACR
         run: |
-          docker push ${{ secrets.ACR_REGISTRY_URL }}/richard:${{ github.sha }}
-          docker push ${{ secrets.ACR_REGISTRY_URL }}/richard:latest
+          docker push ${{ secrets.ACR_REGISTRY_URL }}/waarblijfjejohan:${{ github.sha }}
+          docker push ${{ secrets.ACR_REGISTRY_URL }}/waarblijfjejohan:latest
 
       - name: Image published
         run: |
           echo "✅ Docker image published to ACR!"
-          echo "Image: ${{ secrets.ACR_REGISTRY_URL }}/richard:${{ github.sha }}"
+          echo "Image: ${{ secrets.ACR_REGISTRY_URL }}/waarblijfjejohan:${{ github.sha }}"
